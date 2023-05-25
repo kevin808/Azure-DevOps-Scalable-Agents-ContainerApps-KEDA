@@ -10,44 +10,6 @@ variables:
   - group: azure-container-app
 
 stages :
-  - stage: create_acr
-    jobs:
-      - job: "create_acr"
-        steps:
-          - task: AzureCLI@2
-            displayName: 'Deploy RG and ACR'
-            inputs:
-              azureSubscription: 'thomasthorntoncloud'
-              scriptType: bash
-              scriptLocation: inlineScript
-              addSpnToEnvironment: true
-              inlineScript: |
-                #!/bin/bash
-
-                RESOURCE_GROUP="azure-container-rg"
-                LOCATION="westeurope"
-                LOG_ANALYTICS_WORKSPACE="tamopsacrcontainersla"
-                ACR="tamopsacrcontainers"
-
-                az group create -l $LOCATION -n $RESOURCE_GROUP
-                az acr create -g $RESOURCE_GROUP -n $ACR --sku basic --admin-enabled true
-                az monitor log-analytics workspace create -g $RESOURCE_GROUP --workspace-name $LOG_ANALYTICS_WORKSPACE
-
-  - stage: Build
-    dependsOn: [create_acr]
-    displayName: Build Azure DevOps Agent
-    jobs:  
-    - job: Build
-      displayName: Build job
-      steps:
-      - task: Docker@2
-        displayName: Build and Azure DevOps Agent to container registry
-        inputs:
-          command: buildAndPush
-          repository: 'adoagent'
-          dockerfile: '$(Build.SourcesDirectory)/azure-devops-agent-docker/Dockerfile'
-          containerRegistry: 'tamopsacrcontainers'
-          tags: '$(Build.BuildId)'
 
   - stage: create_container_environment
     dependsOn: [Build]
@@ -57,7 +19,7 @@ stages :
           - task: AzureCLI@2
             displayName: 'Create container app environment'
             inputs:
-              azureSubscription: 'thomasthorntoncloud'
+              azureSubscription: 'KevinLi-Internal(ed5ebdf4-3f16-4970-8666-b0b3803c727e)'
               scriptType: bash
               scriptLocation: inlineScript
               addSpnToEnvironment: true
@@ -69,9 +31,9 @@ stages :
                 az provider register --namespace Microsoft.Web
 
                 RESOURCE_GROUP="azure-container-rg"
-                LOCATION="westeurope"
-                LOG_ANALYTICS_WORKSPACE="tamopsacrcontainersla"
-                CONTAINERAPPS_ENVIRONMENT="tamops-environment"
+                LOCATION="southeastasia"
+                LOG_ANALYTICS_WORKSPACE="klacrcontainersla"
+                CONTAINERAPPS_ENVIRONMENT="kl-environment"
 
                 LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g $RESOURCE_GROUP -n $LOG_ANALYTICS_WORKSPACE -o tsv | tr -d '[:space:]'`
                 LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=`az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g $RESOURCE_GROUP -n $LOG_ANALYTICS_WORKSPACE -o tsv | tr -d '[:space:]'`
@@ -83,6 +45,8 @@ stages :
                 --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET \
                 -l $LOCATION
 
+
+
   - stage: deploy_container_app
     dependsOn: [create_container_environment]
     jobs:
@@ -91,7 +55,7 @@ stages :
           - task: AzureCLI@2
             displayName: 'Deploy app to Container App'
             inputs:
-              azureSubscription: 'thomasthorntoncloud'
+              azureSubscription: 'KevinLi-Internal(ed5ebdf4-3f16-4970-8666-b0b3803c727e)'
               scriptType: bash
               scriptLocation: inlineScript
               addSpnToEnvironment: true
@@ -103,18 +67,18 @@ stages :
                 az provider register --namespace Microsoft.Web
 
                 RESOURCE_GROUP="azure-container-rg"
-                LOG_ANALYTICS_WORKSPACE="tamopsacrcontainersla"
-                CONTAINERAPPS_ENVIRONMENT="tamops-environment"
-                LOCATION="westeurope"
-                AZP_URL="https://dev.azure.com/TerraformTraining"
+                LOG_ANALYTICS_WORKSPACE="klacrcontainersla"
+                CONTAINERAPPS_ENVIRONMENT="kl-environment"
+                LOCATION="southeastasia"
+                AZP_URL="https://dev.azure.com/GitHubDeploy"
                 AZP_TOKEN=$(pattoken)
                 AZP_AGENT_NAME=devopsagentnew
                 AZP_POOL=containerapp-pool
-                AZP_POOL_ID=91
-                REGISTRY_USERNAME=tamopsacrcontainers
+                AZP_POOL_ID=65
+                REGISTRY_USERNAME=klacrcontainers
                 REGISTRY_PASSWORD=$(acrpassword)
-                REGISTRY_LOGIN_SERVER=tamopsacrcontainers.azurecr.io
-                IMAGE=tamopsacrcontainers.azurecr.io/adoagent:'$(Build.BuildId)'
+                REGISTRY_LOGIN_SERVER=klacrcontainers.azurecr.io
+                IMAGE=klacrcontainers.azurecr.io/sampleapp:v1
                 
                 CONTAINER_APP_NAME="azuredevops-agent"
                 MIN_REPLICAS="1"
