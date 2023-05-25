@@ -68,7 +68,7 @@ stages :
                 RESOURCE_GROUP="azure-container-rg"
                 LOG_ANALYTICS_WORKSPACE="klacrcontainersla"
                 CONTAINERAPPS_ENVIRONMENT="kl-environment"
-                LOCATION="southeastasia"
+                LOCATION="eastasia"
                 AZP_URL="https://dev.azure.com/GitHubDeploy"
                 AZP_TOKEN=$(pattoken)
                 AZP_AGENT_NAME=devopsagentnew
