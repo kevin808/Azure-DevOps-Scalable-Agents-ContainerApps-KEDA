@@ -12,7 +12,6 @@ variables:
 stages :
 
   - stage: create_container_environment
-    dependsOn: [Build]
     jobs:
       - job: "deploy_app"
         steps:
