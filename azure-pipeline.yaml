@@ -30,7 +30,7 @@ stages :
                 az provider register --namespace Microsoft.Web
 
                 RESOURCE_GROUP="azure-container-rg"
-                LOCATION="southeastasia"
+                LOCATION="eastasia"
                 LOG_ANALYTICS_WORKSPACE="klacrcontainersla"
                 CONTAINERAPPS_ENVIRONMENT="kl-environment"
 
