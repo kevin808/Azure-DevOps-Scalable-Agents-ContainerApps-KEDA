@@ -1,9 +1,9 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "defaultValue": "northeurope",
+            "defaultValue": "westeurope",
             "type": "String"
         },
         "environment_name": {
@@ -53,12 +53,11 @@
     "resources": [
         {
             "name": "azuredevops-agent",
-            "type": "Microsoft.Web/containerApps",
-            "apiVersion": "2021-03-01",
-            "kind": "containerapp",
+            "type": "Microsoft.App/containerApps",
+            "apiVersion": "2022-06-01-preview",
             "location": "[parameters('location')]",
             "properties": {
-                "kubeEnvironmentId": "[resourceId('Microsoft.Web/kubeEnvironments', parameters('environment_name'))]",
+                "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('environment_name'))]",
                 "configuration": {
                     "secrets": [
                         {
