@@ -71,7 +71,7 @@ stages :
                 LOG_ANALYTICS_WORKSPACE="klacrcontainersla"
                 CONTAINERAPPS_ENVIRONMENT="kl-environment"
                 LOCATION="westeurope"
-                AZP_URL="https://dev.azure.com/lkevi/GitHubDeploy"
+                AZP_URL="https://dev.azure.com/lkevi"
                 AZP_TOKEN=$(pattoken)
                 AZP_AGENT_NAME=devopsagent
                 AZP_POOL=containerapp-pool
